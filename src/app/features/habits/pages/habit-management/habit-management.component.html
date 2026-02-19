@@ -1,0 +1,235 @@
+<ion-header translucent="true">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button autoHide="false"></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Habit Management</ion-title>
+        <ion-buttons slot="end">
+            <ion-button color="primary" (click)="openCreateModal()">
+                <ion-icon slot="start" name="add-outline"></ion-icon>
+                Agregar
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+    <main class="habit-management">
+        <section class="page-copy">
+            <h1>Tus habitos</h1>
+            <ion-text color="medium">
+                <p>Gestiona nombre, intervalo, recordatorio y consistencia visual.</p>
+            </ion-text>
+        </section>
+
+        @if (habits.length) {
+            <ion-list lines="none">
+                @for (habit of habits; track habit.id) {
+                    <ion-card
+                        class="habit-card"
+                        [class.saved]="recentlySavedHabitId === habit.id"
+                        [class.deleting]="deletingHabitId === habit.id"
+                        button="true"
+                        (click)="openEditModal(habit)"
+                    >
+                        <ion-card-header>
+                            <div class="habit-header-row">
+                                <div>
+                                    <ion-card-title>{{ habit.name }}</ion-card-title>
+                                    <ion-card-subtitle>{{ intervalLabel(habit.interval) }}</ion-card-subtitle>
+                                </div>
+                                <ion-icon class="edit-icon" name="create-outline"></ion-icon>
+                            </div>
+                        </ion-card-header>
+
+                        <ion-card-content>
+                            <div class="meta-row">
+                                <span>
+                                    <ion-icon name="flame-outline"></ion-icon>
+                                    Racha actual: <strong>{{ habit.currentStreak }}</strong>
+                                </span>
+                                <span>
+                                    <ion-icon name="medal-outline"></ion-icon>
+                                    Mejor racha: <strong>{{ habit.bestStreak }}</strong>
+                                </span>
+                            </div>
+
+                            <div class="meta-row secondary">
+                                <span>
+                                    Ultima completada:
+                                    {{ habit.lastCompleted ? (habit.lastCompleted | date: 'd MMM y') : 'Sin registros' }}
+                                </span>
+                                @if (habit.reminderTime) {
+                                    <span>
+                                        <ion-icon name="alarm-outline"></ion-icon>
+                                        {{ habit.reminderTime }}
+                                    </span>
+                                }
+                            </div>
+
+                            <div class="mini-calendar" aria-label="Historial visual no editable">
+                                @for (cell of miniCalendar(habit); track cell.date) {
+                                    <div
+                                        class="day-cell"
+                                        [class.completed]="cell.completed"
+                                        [class.today]="cell.isToday"
+                                        [attr.aria-label]="cell.date + ' completado ' + cell.completed"
+                                    >
+                                        <span class="day-label">{{ cell.dayLabel }}</span>
+                                        <span class="day-number">{{ cell.dayNumber }}</span>
+                                    </div>
+                                }
+                            </div>
+                        </ion-card-content>
+                    </ion-card>
+                }
+            </ion-list>
+        } @else {
+            <ion-card class="empty-card">
+                <ion-card-content>
+                    <h2>No hay habitos todavia</h2>
+                    <p>Agrega tu primer habito para empezar a construir racha.</p>
+                    <ion-button color="primary" expand="block" (click)="openCreateModal()">
+                        + Agregar habito
+                    </ion-button>
+                </ion-card-content>
+            </ion-card>
+        }
+    </main>
+
+    <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+        <ion-fab-button color="primary" (click)="openCreateModal()" aria-label="Agregar habito">
+            <ion-icon name="add-outline"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+</ion-content>
+
+<ion-modal [isOpen]="isModalOpen" (didDismiss)="closeModal()">
+    <ng-template>
+        <ion-header translucent="true">
+            <ion-toolbar>
+                <ion-title>{{ isEditMode ? 'Editar habito' : 'Crear habito' }}</ion-title>
+                <ion-buttons slot="end">
+                    <ion-button color="medium" (click)="closeModal()">Cerrar</ion-button>
+                </ion-buttons>
+            </ion-toolbar>
+        </ion-header>
+
+        <ion-content class="modal-content">
+            <ion-list lines="full">
+                <ion-item>
+                    <ion-label position="stacked">Nombre</ion-label>
+                    <ion-input
+                        [(ngModel)]="form.name"
+                        maxlength="50"
+                        placeholder="Ingrese nombre..."
+                    ></ion-input>
+                </ion-item>
+
+                <ion-item lines="none" class="interval-item">
+                    <ion-label position="stacked">Repetir</ion-label>
+                    <ion-segment [(ngModel)]="form.interval" class="interval-segment">
+                        @for (option of intervalOptions; track option.value) {
+                            <ion-segment-button [value]="option.value">
+                                <ion-label>{{ option.label }}</ion-label>
+                            </ion-segment-button>
+                        }
+                    </ion-segment>
+                </ion-item>
+
+                <section class="reminder-item">
+                    <section class="inline-reminder-picker">
+                        <section class="manual-time">
+                            <p>Recordatorio</p>
+                            <input
+                                class="manual-time-input"
+                                type="text"
+                                [value]="form.reminderTime"
+                                placeholder="00:00"
+                                maxlength="5"
+                                inputmode="numeric"
+                                (input)="onManualReminderInput($event)"
+                                (blur)="normalizeManualReminder()"
+                            />
+                        </section>
+
+                        <section class="time-grid">
+                            @for (option of reminderOptions; track option.value) {
+                                <button
+                                    type="button"
+                                    class="time-option"
+                                    [class.active]="form.reminderTime === option.value"
+                                    (click)="pickReminderTime(option.value)"
+                                >
+                                    {{ option.label }}
+                                </button>
+                            }
+                        </section>
+                    </section>
+                </section>
+            </ion-list>
+
+            @if (isEditMode && selectedHabit) {
+                <section class="readonly-info">
+                    <ion-note color="medium">Rachas</ion-note>
+                    <div class="streak-stats">
+                        <div class="streak-chip">
+                            <ion-icon name="flame-outline"></ion-icon>
+                            <span>Actual</span>
+                            <strong>{{ selectedHabit.currentStreak }}</strong>
+                        </div>
+                        <div class="streak-chip">
+                            <ion-icon name="medal-outline"></ion-icon>
+                            <span>Mejor</span>
+                            <strong>{{ selectedHabit.bestStreak }}</strong>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="editable-history">
+                    <ion-note color="medium">Historial (30 dias)</ion-note>
+                    <p class="history-help">Toca el numero para marcar o desmarcar un dia.</p>
+                    <div class="mini-calendar modal-calendar" aria-label="Calendario editable de historial">
+                        @for (cell of editCalendar(selectedHabit); track cell.date) {
+                            <button
+                                type="button"
+                                class="day-cell day-cell-btn"
+                                [class.completed]="cell.completed"
+                                [class.today]="cell.isToday"
+                                (click)="toggleSelectedHabitDay(cell.date)"
+                                [attr.aria-label]="cell.date + ' completado ' + cell.completed"
+                            >
+                                <span class="day-label">{{ cell.dayLabel }}</span>
+                                <span class="day-number">{{ cell.dayNumber }}</span>
+                            </button>
+                        }
+                    </div>
+                </section>
+            }
+
+            @if (validationMessage) {
+                <ion-text color="danger">
+                    <p class="validation">{{ validationMessage }}</p>
+                </ion-text>
+            }
+
+            <section class="modal-actions">
+                <ion-button expand="block" color="primary" (click)="saveHabit()">
+                    <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+                    Guardar
+                </ion-button>
+                @if (isEditMode) {
+                    <ion-button
+                        expand="block"
+                        fill="outline"
+                        class="secondary-outline-btn"
+                        (click)="askDeleteHabit()"
+                    >
+                        <ion-icon slot="start" name="trash-outline"></ion-icon>
+                        Eliminar
+                    </ion-button>
+                }
+            </section>
+        </ion-content>
+    </ng-template>
+</ion-modal>

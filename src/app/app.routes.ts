@@ -30,6 +30,11 @@ export const routes: Routes = [
         redirectTo: 'tabs/dashboard',
     },
     {
+        path: 'habit-management',
+        pathMatch: 'full',
+        redirectTo: 'tabs/habits',
+    },
+    {
         path: 'tabs',
         canActivate: [OnboardingGuard],
         loadComponent: () => import('./layout/tabs/tabs.page').then((m) => m.TabsPage),
@@ -44,14 +49,16 @@ export const routes: Routes = [
             {
                 path: 'habits',
                 loadComponent: () =>
-                    import('./features/habits/pages/habits-list/habits-list.page').then(
-                        (m) => m.HabitsListPage,
+                    import('./features/habits/pages/habit-management/habit-management.component').then(
+                        (m) => m.HabitManagementComponent,
                     ),
             },
             {
                 path: 'history',
                 loadComponent: () =>
-                    import('./features/history/pages/history.page').then((m) => m.HistoryPage),
+                    import('./features/history/pages/streak-history.component').then(
+                        (m) => m.StreakHistoryComponent,
+                    ),
             },
             {
                 path: 'mood',
@@ -76,6 +83,13 @@ export const routes: Routes = [
                 redirectTo: 'dashboard',
             },
         ],
+    },
+    {
+        path: 'streak-history',
+        loadComponent: () =>
+            import('./features/history/pages/streak-history.component').then(
+                (m) => m.StreakHistoryComponent,
+            ),
     },
     {
         path: '**',

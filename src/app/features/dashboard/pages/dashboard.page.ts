@@ -128,6 +128,11 @@ export class DashboardPage {
     }
 
     protected openStreakModal(): void {
+        if (this.streakDays >= 7) {
+            void this.router.navigateByUrl('/streak-history');
+            return;
+        }
+
         void this.presentStreakModal();
     }
 

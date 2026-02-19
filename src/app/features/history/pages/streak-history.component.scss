@@ -1,0 +1,307 @@
+:host {
+    display: block;
+}
+
+ion-toolbar {
+    --background: var(--ion-background-color);
+    --border-color: transparent;
+}
+
+ion-title {
+    text-align: center;
+}
+
+.streak-history {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 5.4rem 1rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.header-copy {
+    display: flex;
+    align-items: center;
+}
+
+.header-copy h1 {
+    margin: 0;
+    font-size: clamp(1.5rem, 5vw, 2rem);
+}
+
+.header-copy p {
+    margin: 0.35rem 0 0;
+}
+
+.best-streak {
+    border: 1px solid var(--ion-color-step-200);
+    border-radius: 12px;
+    padding: 0.95rem;
+    background: var(--ion-item-background);
+}
+
+.best-streak-title {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.best-streak h2 {
+    margin: 0;
+    color: var(--ion-color-primary);
+    font-size: 1.1rem;
+}
+
+.best-streak p {
+    margin: 0.5rem 0 0;
+    color: var(--ion-color-step-650);
+}
+
+.best-streak ion-progress-bar {
+    margin-top: 0.5rem;
+    height: 8px;
+}
+
+.tie-badge {
+    margin-top: 0.7rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.flame-pop {
+    animation: flamePop 0.45s ease-out;
+}
+
+.flame-tie {
+    animation: tieFlame 1.2s ease-in-out infinite;
+}
+
+.recent-history h3,
+.calendar h3,
+.detail-card h3 {
+    margin: 0 0 0.45rem;
+    font-size: 1rem;
+}
+
+.recent-history ion-list {
+    background: transparent;
+    max-height: 18.5rem;
+    overflow-y: auto;
+    border: 1px solid var(--ion-color-step-200);
+    border-radius: 12px;
+    padding: 0.25rem;
+}
+
+.day-item {
+    --background: transparent;
+    --min-height: 2.5rem;
+}
+
+.day-item h4 {
+    margin: 0;
+    font-size: 0.92rem;
+}
+
+.day-item p {
+    margin: 0.2rem 0 0;
+    font-size: 0.78rem;
+    color: var(--ion-color-step-550);
+}
+
+.today-item {
+    --background: rgba(var(--ion-color-primary-rgb), 0.1);
+    border-radius: 9px;
+}
+
+.check-pulse {
+    animation: checkPulse 0.25s ease-out;
+}
+
+.calendar {
+    border: 1px solid var(--ion-color-step-200);
+    border-radius: 12px;
+    padding: 0.85rem;
+    background: var(--ion-item-background);
+}
+
+.legend {
+    margin-bottom: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    color: var(--ion-color-step-650);
+    font-size: 0.82rem;
+}
+
+.legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.month-scroll {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 0.4rem;
+}
+
+.month-card {
+    min-width: min(100%, 360px);
+    border: 1px solid var(--ion-color-step-200);
+    border-radius: 10px;
+    padding: 0.7rem;
+    background: rgba(var(--ion-color-step-100-rgb, 29, 35, 31), 0.35);
+    scroll-snap-align: start;
+}
+
+.month-card h4 {
+    margin: 0 0 0.55rem;
+    text-transform: capitalize;
+    color: var(--ion-color-step-750);
+    font-size: 0.92rem;
+}
+
+.calendar ion-grid {
+    --ion-grid-padding: 0;
+}
+
+.weekday-labels,
+.month-grid-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.weekday-labels ion-col {
+    color: var(--ion-color-step-550);
+    font-size: 0.8rem;
+    text-align: center;
+    min-width: 2.2rem;
+    padding: 0;
+}
+
+.month-grid-row ion-col {
+    min-width: 2.2rem;
+    padding: 0;
+}
+
+.calendar-cell {
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 999px;
+    border: 1px solid var(--ion-color-step-350);
+    background: var(--ion-color-step-150);
+    color: var(--ion-color-step-750);
+    font-weight: 600;
+}
+
+.calendar-cell.completed {
+    background: rgba(var(--ion-color-success-rgb), 0.3);
+    color: var(--ion-color-success-contrast);
+    border-color: var(--ion-color-success);
+}
+
+.calendar-cell.current-day {
+    animation: ringPulse 1.2s ease-in-out infinite;
+}
+
+.empty-cell {
+    display: inline-block;
+    width: 2.2rem;
+    height: 2.2rem;
+}
+
+.detail-card {
+    border: 1px solid var(--ion-color-step-200);
+    border-radius: 12px;
+    padding: 0.85rem;
+    background: var(--ion-item-background);
+}
+
+.detail-date {
+    margin: 0;
+    text-transform: capitalize;
+}
+
+.detail-card ion-list {
+    background: transparent;
+    margin-top: 0.35rem;
+}
+
+.detail-item {
+    --background: transparent;
+    --min-height: 2.3rem;
+}
+
+.summary p {
+    margin: 0;
+}
+
+.celebration-modal {
+    --background: var(--ion-background-color);
+}
+
+.celebration-body {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1.5rem;
+    gap: 0.9rem;
+    text-align: center;
+}
+
+.celebration-body ion-icon {
+    font-size: 2rem;
+    margin: 0 auto;
+}
+
+.celebration-body h2,
+.celebration-body p {
+    margin: 0;
+}
+
+@keyframes flamePop {
+    0% {
+        transform: scale(0.8);
+        opacity: 0.2;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes checkPulse {
+    0% {
+        transform: scale(0.82);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes ringPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(var(--ion-color-primary-rgb), 0.45);
+    }
+    100% {
+        box-shadow: 0 0 0 8px rgba(var(--ion-color-primary-rgb), 0);
+    }
+}
+
+@keyframes tieFlame {
+    0% {
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        transform: translateY(-2px) scale(1.05);
+    }
+    100% {
+        transform: translateY(0) scale(1);
+    }
+}

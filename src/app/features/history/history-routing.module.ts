@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { HistoryPage } from './pages/history.page';
+import { StreakHistoryComponent } from './pages/streak-history.component';
 
 const routes: Routes = [
     {
         path: '',
-        component: HistoryPage,
+        component: StreakHistoryComponent,
     },
 ];
 

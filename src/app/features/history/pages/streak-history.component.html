@@ -1,0 +1,167 @@
+<ion-header translucent="true">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="/tabs/dashboard"></ion-back-button>
+        </ion-buttons>
+        <ion-title>Historial de rachas</ion-title>
+        <ion-buttons slot="end">
+            <ion-icon name="flame" color="success" aria-hidden="true"></ion-icon>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+    <main class="streak-history">
+        <section class="header-copy">
+            <div>
+                <h1>Historial de rachas</h1>
+                <ion-text color="medium">
+                    <p>Tu progreso refleja tu disciplina</p>
+                </ion-text>
+            </div>
+        </section>
+
+        <section class="best-streak">
+            <div class="best-streak-title">
+                <ion-icon
+                    name="flame-outline"
+                    color="primary"
+                    class="flame-pop"
+                    [class.flame-tie]="tieBestStreak"
+                ></ion-icon>
+                <h2>Mejor racha: {{ bestStreak }} dias</h2>
+            </div>
+            <p>Racha actual: {{ currentStreak }} / {{ maxGoal }} dias</p>
+            <ion-progress-bar color="primary" [value]="progressValue"></ion-progress-bar>
+            @if (tieBestStreak) {
+                <ion-badge color="success" class="tie-badge">
+                    <ion-icon name="checkmark-circle"></ion-icon>
+                    <span>Empataste tu mejor racha</span>
+                </ion-badge>
+            }
+        </section>
+
+        <section class="recent-history">
+            <h3>Ultimos 30 dias</h3>
+            <ion-list lines="none">
+                @for (entry of streaks; track trackByDate($index, entry)) {
+                    <ion-item
+                        button
+                        detail="false"
+                        class="day-item"
+                        [class.today-item]="entry.date === today"
+                        (click)="selectDay(entry.date)"
+                    >
+                        <ion-label>
+                            <h4>{{ entry.date | date: 'EEE, d MMM y' }}</h4>
+                            <p>Habito cumplido: {{ daySummary(entry.date) }}</p>
+                        </ion-label>
+                        <ion-icon
+                            slot="end"
+                            [name]="entry.completed ? 'checkmark-circle' : 'ellipse-outline'"
+                            [color]="entry.completed ? 'success' : 'medium'"
+                            [class.check-pulse]="entry.completed"
+                            aria-hidden="true"
+                        ></ion-icon>
+                    </ion-item>
+                }
+            </ion-list>
+        </section>
+
+        <section class="calendar">
+            <h3>Calendario mensual</h3>
+            <div class="legend">
+                <span><ion-icon name="checkmark-circle" color="success"></ion-icon> Completado</span>
+                <span><ion-icon name="ellipse-outline" color="medium"></ion-icon> No completado</span>
+            </div>
+            <div class="month-scroll">
+                @for (month of monthCalendars; track month.key) {
+                    <article class="month-card">
+                        <h4>{{ month.label }}</h4>
+                        <ion-grid>
+                            <ion-row class="weekday-labels">
+                                <ion-col>Lun</ion-col>
+                                <ion-col>Mar</ion-col>
+                                <ion-col>Mie</ion-col>
+                                <ion-col>Jue</ion-col>
+                                <ion-col>Vie</ion-col>
+                                <ion-col>Sab</ion-col>
+                                <ion-col>Dom</ion-col>
+                            </ion-row>
+                            <ion-row class="month-grid-row">
+                                @for (cell of month.cells; track $index) {
+                                    <ion-col size="auto">
+                                        @if (cell) {
+                                            <button
+                                                type="button"
+                                                class="calendar-cell"
+                                                [class.completed]="cell.completed"
+                                                [class.current-day]="cell.isToday"
+                                                (click)="selectDay(cell.date)"
+                                                [attr.aria-label]="'Detalle ' + (cell.date | date: 'd MMM y')"
+                                            >
+                                                {{ cell.day }}
+                                            </button>
+                                        } @else {
+                                            <span class="empty-cell" aria-hidden="true"></span>
+                                        }
+                                    </ion-col>
+                                }
+                            </ion-row>
+                        </ion-grid>
+                    </article>
+                }
+            </div>
+        </section>
+
+        <section class="detail-card">
+            <h3>Detalle del dia</h3>
+            @if (selectedDayDetail) {
+                <ion-text color="light">
+                    <p class="detail-date">{{ selectedDayDetail.date | date: 'EEEE, d MMMM y' }}</p>
+                </ion-text>
+                <ion-text [color]="selectedDayCompleted ? 'success' : 'medium'">
+                    <p>{{ completionLabel }}</p>
+                </ion-text>
+                <ion-list lines="none">
+                    @for (habit of selectedDayDetail.habits; track trackByHabit($index, habit)) {
+                        <ion-item class="detail-item">
+                            <ion-label>{{ habit.name }}</ion-label>
+                            <ion-checkbox
+                                slot="end"
+                                color="primary"
+                                [checked]="habit.completed"
+                                (ionChange)="onHabitToggle(habit.id, $event.detail.checked)"
+                            ></ion-checkbox>
+                        </ion-item>
+                    }
+                </ion-list>
+            }
+        </section>
+
+        <section class="summary">
+            <ion-text color="medium">
+                <p>Slots desbloqueados disponibles: {{ slotsUnlocked }}</p>
+            </ion-text>
+        </section>
+
+        <ion-button expand="block" color="primary" (click)="goToDashboard()">
+            Volver al Dashboard
+        </ion-button>
+    </main>
+
+    <ion-modal [isOpen]="showNewBestModal" (didDismiss)="closeCelebration()">
+        <ng-template>
+            <ion-content class="celebration-modal">
+                <div class="celebration-body">
+                    <ion-icon name="flame" color="success" aria-hidden="true"></ion-icon>
+                    <h2>!Nueva mejor racha!</h2>
+                    <p>Marcaste un nuevo maximo de {{ bestStreak }} dias consecutivos.</p>
+                    <ion-button expand="block" color="primary" (click)="closeCelebration()">
+                        Seguir
+                    </ion-button>
+                </div>
+            </ion-content>
+        </ng-template>
+    </ion-modal>
+</ion-content>
