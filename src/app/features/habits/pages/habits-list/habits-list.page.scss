@@ -1,0 +1,59 @@
+ion-toolbar {
+    --background: var(--ion-background-color);
+    --border-color: transparent;
+}
+
+.habits-list-page {
+    min-height: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 5.5rem 1rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.section-copy h1 {
+    margin: 0;
+    font-size: clamp(1.4rem, 4.5vw, 2rem);
+}
+
+.section-copy p {
+    margin: 0.35rem 0 0;
+}
+
+ion-list {
+    background: transparent;
+    padding: 0;
+}
+
+.habit-row {
+    --background: var(--ion-item-background);
+    --border-radius: 12px;
+    margin-bottom: 0.55rem;
+    border: 1px solid var(--ion-color-step-200);
+}
+
+.empty-row {
+    --background: var(--ion-item-background);
+    --border-radius: 12px;
+    border: 1px dashed var(--ion-color-step-300);
+    color: var(--ion-color-step-600);
+}
+
+.available-slots {
+    margin-top: 0.25rem;
+}
+
+.available-slots p {
+    margin: 0 0 0.65rem;
+    color: var(--ion-text-color);
+}
+
+.available-slots ion-button {
+    margin: 0;
+}
+
+.empty-text {
+    margin: 0.4rem 0;
+}

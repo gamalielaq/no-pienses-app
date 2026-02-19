@@ -1,0 +1,46 @@
+<ion-header translucent="true">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button autoHide="false"></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Gestionar habitos</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+    <main class="habits-list-page">
+        <section class="section-copy">
+            <h1>Tus habitos</h1>
+            <ion-text color="medium">
+                <p>{{ habits.length }} de {{ maxHabits }} definidos</p>
+            </ion-text>
+        </section>
+
+        <section>
+            @if (habits.length) {
+                <ion-list lines="none">
+                    @for (habit of habits; track habit.id) {
+                        <ion-item class="habit-row">
+                            <ion-label>{{ habit.name }}</ion-label>
+                        </ion-item>
+                    }
+                </ion-list>
+            } @else {
+                <ion-item class="empty-row" lines="none">
+                    <ion-label>Aun no tienes habitos definidos.</ion-label>
+                </ion-item>
+            }
+        </section>
+
+        @if (availableSlots > 0) {
+            <section class="available-slots">
+                <ion-text>
+                    <p>Espacios disponibles: {{ availableSlots }}</p>
+                </ion-text>
+                <ion-button expand="block" color="primary" (click)="goToCreateHabits()">
+                    + Crear habito
+                </ion-button>
+            </section>
+        }
+    </main>
+</ion-content>

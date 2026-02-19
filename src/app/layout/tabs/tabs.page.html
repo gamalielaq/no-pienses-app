@@ -1,0 +1,27 @@
+<ion-menu contentId="main-content" side="start" type="overlay">
+    <ion-header>
+        <ion-toolbar>
+            <ion-title>Racha Clara</ion-title>
+        </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+        <ion-list lines="none">
+            @for (item of menuItems; track item.link) {
+                <ion-menu-toggle autoHide="true">
+                    <ion-item
+                        button
+                        [routerLink]="item.link"
+                        routerLinkActive="menu-item-active"
+                        class="menu-item"
+                    >
+                        <ion-icon slot="start" [name]="item.icon"></ion-icon>
+                        <ion-label>{{ item.label }}</ion-label>
+                    </ion-item>
+                </ion-menu-toggle>
+            }
+        </ion-list>
+    </ion-content>
+</ion-menu>
+
+<ion-router-outlet id="main-content"></ion-router-outlet>

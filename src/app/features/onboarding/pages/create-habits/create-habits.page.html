@@ -1,0 +1,71 @@
+<ion-content [fullscreen]="true">
+    <main class="create-habits">
+        <section class="copy">
+            <h1>Define tus hábitos base</h1>
+            <p>Empieza con lo mínimo. 3 son suficientes.</p>
+        </section>
+
+        <section class="creator">
+            <ion-item lines="none" class="input-shell">
+                <ion-input
+                    #habitInputEl
+                    [(ngModel)]="habitName"
+                    placeholder="Ej: Entrenar, Leer, Meditar..."
+                    maxlength="50"
+                    (keydown.enter)="onEnterKey($event)"
+                ></ion-input>
+                <ion-button
+                    slot="end"
+                    color="primary"
+                    fill="solid"
+                    shape="round"
+                    [disabled]="habits.length >= maxHabits"
+                    (click)="addHabit()"
+                    aria-label="Agregar habito"
+                >
+                    <ion-icon name="add-outline"></ion-icon>
+                </ion-button>
+            </ion-item>
+            @if (validationMessage) {
+                <ion-text color="danger">
+                    <p class="validation">{{ validationMessage }}</p>
+                </ion-text>
+            }
+        </section>
+
+        <section class="progress">
+            <p>{{ progressLabel }}</p>
+            <ion-progress-bar [value]="progressValue"></ion-progress-bar>
+        </section>
+
+        <section class="list">
+            <ion-list lines="none">
+                @for (habit of habits; track habit.id) {
+                    <ion-item class="habit-item">
+                        <ion-icon slot="start" name="sparkles-outline"></ion-icon>
+                        <ion-label>{{ habit.name }}</ion-label>
+                        <ion-button
+                            slot="end"
+                            fill="clear"
+                            color="medium"
+                            (click)="removeHabit(habit.id)"
+                            aria-label="Eliminar habito"
+                        >
+                            <ion-icon name="close-outline"></ion-icon>
+                        </ion-button>
+                    </ion-item>
+                }
+            </ion-list>
+        </section>
+
+        <ion-button
+            class="continue-btn"
+            color="primary"
+            expand="block"
+            [disabled]="!canContinue"
+            (click)="continueToDashboard()"
+        >
+            Continuar
+        </ion-button>
+    </main>
+</ion-content>

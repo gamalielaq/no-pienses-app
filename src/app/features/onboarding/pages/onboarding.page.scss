@@ -1,0 +1,69 @@
+.onboarding {
+    --brand-primary: #18bc88;
+    --brand-primary-strong: #15a678;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem 1.25rem 2.5rem;
+    gap: 0.9rem;
+    background: radial-gradient(circle at 20% 5%, #000000 0%, #000000 45%, #000000 100%);
+    color: #f5f8ff;
+}
+
+.logo {
+    width: 91px;
+    height: 91px;
+    border-radius: 13px;
+    display: block;
+    object-fit: contain;
+    object-position: center;
+    background: radial-gradient(circle, #dee111 0%, #32d5dd 70%, #2082bd 100%);
+    border: 0;
+    padding: 0.3rem;
+    // box-shadow: 0 12px 28px rgba(17, 92, 225, 0.35);
+}
+
+.kicker {
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #16ffe1;
+    font-weight: 700;
+}
+
+h1 {
+    margin: 0.35rem 0 0;
+    font-size: clamp(2rem, 7vw, 3rem);
+    line-height: 1.08;
+}
+
+p {
+    margin: 0 0 0.35rem;
+    font-size: 1.02rem;
+    line-height: 1.4;
+    color: #b5bfd3;
+}
+
+ion-button {
+    width: min(255px, 88%);
+    --border-radius: 35px;
+    --padding-top: 0.75rem;
+    --padding-bottom: 0.75rem;
+    --color: #ffffff;
+    // --background: var(--brand-primary);
+    --background: #36915c;
+    // --background-hover: var(--brand-primary-strong);
+    // --background-activated: var(--brand-primary-strong);
+    // --box-shadow: 0 10px 24px rgba(24, 188, 136, 0.34);
+    font-weight: 700;
+    text-transform: none;
+    box-shadow: none;
+}
+
+small {
+    color: #7f8ba5;
+    font-size: 0.78rem;
+}

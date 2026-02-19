@@ -1,0 +1,102 @@
+:host {
+    display: block;
+}
+
+ion-content {
+    --background: var(--ion-background-color);
+    color: var(--ion-text-color);
+}
+
+.create-habits {
+    min-height: 100vh;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2.2rem 1.2rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+}
+
+.copy h1 {
+    margin: 0;
+    font-size: clamp(1.7rem, 4.8vw, 2.35rem);
+    line-height: 1.1;
+}
+
+.copy p {
+    margin: 0.45rem 0 0;
+    color: var(--ion-color-step-550);
+    font-size: 0.98rem;
+}
+
+.input-shell {
+    --inner-padding-end: 0.2rem;
+    --padding-start: 0.7rem;
+    --border-radius: 16px;
+    --background: var(--ion-color-step-100);
+    // border: 1px solid var(--ion-color-step-200);
+}
+
+.input-shell ion-input {
+    --color: var(--ion-text-color);
+    --placeholder-color: var(--ion-color-step-500);
+}
+
+.validation {
+    margin: 0.45rem 0 0;
+    font-size: 0.82rem;
+}
+
+.progress p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--ion-color-step-500);
+}
+
+.progress ion-progress-bar {
+    margin-top: 0.45rem;
+    height: 9px;
+    --background: var(--ion-color-step-150);
+    --progress-background: var(--ion-color-primary);
+    --border-radius: 999px;
+}
+
+.list {
+    min-height: 120px;
+}
+
+.list ion-list {
+    background: transparent;
+}
+
+.habit-item {
+    --background: var(--ion-item-background);
+    --border-radius: 12px;
+    margin-bottom: 0.52rem;
+    // border: 1px solid var(--ion-color-step-200);
+    animation: fade-slide-in 220ms ease;
+}
+
+.habit-item ion-icon[slot='start'] {
+    color: var(--ion-color-primary);
+}
+
+.continue-btn {
+    margin-top: auto;
+    --border-radius: 14px;
+    --padding-top: 0.95rem;
+    --padding-bottom: 0.95rem;
+    font-weight: 700;
+    text-transform: none;
+}
+
+@keyframes fade-slide-in {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

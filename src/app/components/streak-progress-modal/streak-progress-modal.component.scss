@@ -1,0 +1,55 @@
+ion-toolbar {
+    --background: transparent;
+    --border-color: transparent;
+}
+
+.streak-modal-content {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.streak-icon {
+    font-size: 2.5rem;
+}
+
+h2 {
+    margin: 0;
+    font-size: 1.35rem;
+}
+
+p {
+    margin: 0;
+}
+
+.days-track {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 0.4rem;
+    margin-top: 0.2rem;
+    margin-bottom: 0.25rem;
+}
+
+.day-dot {
+    height: 30px;
+    border-radius: 999px;
+    border: 1px solid var(--ion-color-step-300);
+    background: var(--ion-color-step-150);
+    color: var(--ion-color-step-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+}
+
+.day-dot-active {
+    background: var(--ion-color-primary);
+    border-color: var(--ion-color-primary);
+    color: var(--ion-color-primary-contrast);
+}

@@ -1,0 +1,25 @@
+<ion-header translucent="true">
+    <ion-toolbar></ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+    <main class="streak-modal-content">
+        <ion-icon class="streak-icon" name="flame" color="primary"></ion-icon>
+
+        <ion-text color="light">
+            <h2>Vas en racha</h2>
+        </ion-text>
+
+        <ion-text color="light">
+            <p>{{ streakDays }} dias seguidos cumpliendo</p>
+        </ion-text>
+
+        <div class="days-track">
+            @for (day of daysTrack; track day) {
+                <div class="day-dot" [class.day-dot-active]="isActiveDay(day)">{{ day }}</div>
+            }
+        </div>
+
+        <ion-button expand="block" color="primary" (click)="close()">Entendido</ion-button>
+    </main>
+</ion-content>

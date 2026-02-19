@@ -1,0 +1,52 @@
+/**
+ * Ionic Dark Theme
+ * -----------------------------------------------------
+ * For more info, please see:
+ * https://ionicframework.com/docs/theming/dark-mode
+ */
+
+/* @import "@ionic/angular/css/palettes/dark.always.css"; */
+@import '@ionic/angular/css/palettes/dark.class.css';
+/* @import "@ionic/angular/css/palettes/dark.system.css"; */
+
+:root {
+    --app-primary: #18bc88;
+    --app-primary-contrast: #ffffff;
+
+    --ion-color-primary: var(--app-primary);
+    --ion-color-primary-rgb: 24, 188, 136;
+    --ion-color-primary-contrast: var(--app-primary-contrast);
+    --ion-color-primary-contrast-rgb: 255, 255, 255;
+    --ion-color-primary-shade: #15a678;
+    --ion-color-primary-tint: #2fc397;
+}
+
+body.dark {
+    --ion-background-color: #070908;
+    --ion-background-color-rgb: 7, 9, 8;
+    --ion-text-color: #eef2f0;
+    --ion-text-color-rgb: 238, 242, 240;
+
+    --ion-item-background: #0f1411;
+    --ion-card-background: #101612;
+    --ion-toolbar-background: #070908;
+
+    --ion-color-step-50: #141917;
+    --ion-color-step-100: #1d231f;
+    --ion-color-step-150: #252c27;
+    --ion-color-step-200: #2f3631;
+    --ion-color-step-250: #3a423d;
+    --ion-color-step-300: #464f49;
+    --ion-color-step-350: #535c56;
+    --ion-color-step-400: #616a64;
+    --ion-color-step-450: #707973;
+    --ion-color-step-500: #7f8882;
+    --ion-color-step-550: #8e9690;
+    --ion-color-step-600: #9da59f;
+    --ion-color-step-650: #adb4ae;
+    --ion-color-step-700: #bcc3be;
+    --ion-color-step-750: #cbd3cd;
+    --ion-color-step-800: #dbe2dd;
+    --ion-color-step-850: #eaf2ec;
+    --ion-color-step-900: #f6fffa;
+}

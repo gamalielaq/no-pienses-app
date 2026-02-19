@@ -1,0 +1,26 @@
+ion-menu ion-content {
+    --background: var(--ion-background-color);
+}
+
+ion-menu ion-toolbar {
+    --background: var(--ion-background-color);
+}
+
+.menu-item {
+    --background: transparent;
+    --border-radius: 12px;
+    margin: 0.2rem 0.65rem;
+}
+
+.menu-item ion-icon {
+    color: var(--ion-color-step-500);
+}
+
+.menu-item-active {
+    --background: color-mix(in srgb, var(--ion-color-primary) 14%, transparent);
+}
+
+.menu-item-active ion-icon,
+.menu-item-active ion-label {
+    color: var(--ion-color-primary);
+}
