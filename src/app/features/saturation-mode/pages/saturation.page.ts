@@ -11,7 +11,7 @@ import { IonButton, IonContent } from '@ionic/angular/standalone';
             <section>
                 <h1>Saturation Mode</h1>
                 <p>Pantalla base para reimplementar el modo enfoque.</p>
-                <ion-button fill="outline" routerLink="/tabs/dashboard">Volver</ion-button>
+                <ion-button fill="outline" routerLink="/dashboard">Volver</ion-button>
             </section>
         </ion-content>
     `,

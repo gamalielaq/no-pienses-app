@@ -117,7 +117,7 @@ export class CreateHabitsPage {
 
         try {
             await this.habitsService.saveInitialHabits(this.habits());
-            void this.router.navigateByUrl('/tabs/dashboard', { replaceUrl: true });
+            void this.router.navigateByUrl('/dashboard', { replaceUrl: true });
         } catch (error) {
             console.error('[CreateHabits] Error saving habits:', error);
             this.validationMessage.set('No se pudieron guardar tus habitos. Intenta de nuevo.');

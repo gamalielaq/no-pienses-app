@@ -1,12 +1,8 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { tabsChildRoutes } from './layout/tabs/tabs.routes';
 
 export const routes: Routes = [
-    {
-        path: '',
-        pathMatch: 'full',
-        redirectTo: 'tabs',
-    },
     {
         path: 'onboarding',
         loadComponent: () =>
@@ -26,74 +22,23 @@ export const routes: Routes = [
         redirectTo: 'onboarding/create-habits',
     },
     {
-        path: 'dashboard',
-        pathMatch: 'full',
-        redirectTo: 'tabs/dashboard',
-    },
-    {
         path: 'habit-management',
         pathMatch: 'full',
-        redirectTo: 'tabs/habits',
+        redirectTo: 'habits',
     },
     {
-        path: 'tabs',
+        path: '',
         canActivate: [authGuard],
         loadComponent: () => import('./layout/tabs/tabs.page').then((m) => m.TabsPage),
-        children: [
-            {
-                path: 'dashboard',
-                loadComponent: () =>
-                    import('./features/dashboard/pages/dashboard.page').then(
-                        (m) => m.DashboardPage,
-                    ),
-            },
-            {
-                path: 'habits',
-                loadComponent: () =>
-                    import('./features/habits/pages/habit-management/habit-management.component').then(
-                        (m) => m.HabitManagementComponent,
-                    ),
-            },
-            {
-                path: 'history',
-                loadComponent: () =>
-                    import('./features/history/pages/streak-history.component').then(
-                        (m) => m.StreakHistoryComponent,
-                    ),
-            },
-            {
-                path: 'mood',
-                loadComponent: () =>
-                    import('./features/mood/pages/mood.page').then((m) => m.MoodPage),
-            },
-            {
-                path: 'settings',
-                loadComponent: () =>
-                    import('./features/settings/pages/settings.page').then((m) => m.SettingsPage),
-            },
-            {
-                path: 'saturation',
-                loadComponent: () =>
-                    import('./features/saturation-mode/pages/saturation.page').then(
-                        (m) => m.SaturationPage,
-                    ),
-            },
-            {
-                path: '',
-                pathMatch: 'full',
-                redirectTo: 'dashboard',
-            },
-        ],
+        children: tabsChildRoutes,
     },
     {
         path: 'streak-history',
-        loadComponent: () =>
-            import('./features/history/pages/streak-history.component').then(
-                (m) => m.StreakHistoryComponent,
-            ),
+        pathMatch: 'full',
+        redirectTo: 'history',
     },
     {
         path: '**',
-        redirectTo: 'tabs',
+        redirectTo: 'dashboard',
     },
 ];

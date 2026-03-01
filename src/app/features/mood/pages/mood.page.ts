@@ -11,7 +11,7 @@ import { IonButton, IonContent } from '@ionic/angular/standalone';
             <section>
                 <h1>Mood</h1>
                 <p>Plantilla base de estado de animo.</p>
-                <ion-button fill="outline" routerLink="/tabs/dashboard">Volver</ion-button>
+                <ion-button fill="outline" routerLink="/dashboard">Volver</ion-button>
             </section>
         </ion-content>
     `,

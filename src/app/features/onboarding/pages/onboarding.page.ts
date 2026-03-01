@@ -22,7 +22,7 @@ export class OnboardingPage {
     async ionViewWillEnter(): Promise<void> {
         await this.authService.waitForAuthReady();
         if (this.authService.getCurrentUser()) {
-            void this.router.navigateByUrl('/tabs/dashboard', { replaceUrl: true });
+            void this.router.navigateByUrl('/dashboard', { replaceUrl: true });
         }
     }
 
