@@ -14,6 +14,7 @@ export const routes: Routes = [
     },
     {
         path: 'onboarding/create-habits',
+        canActivate: [authGuard],
         loadComponent: () =>
             import('./features/onboarding/pages/create-habits/create-habits.page').then(
                 (m) => m.CreateHabitsPage,

@@ -7,31 +7,76 @@
 
         <section class="creator">
             <ion-item lines="none" class="input-shell">
-                <ion-input placeholder="Ej: Entrenar, Leer, Meditar..." maxlength="50"></ion-input>
-                <ion-button slot="end" color="primary" fill="solid" shape="round" aria-label="Agregar habito">
+                <ion-input
+                    placeholder="Ej: Entrenar, Leer, Meditar..."
+                    maxlength="50"
+                    [ngModel]="habitName()"
+                    (ngModelChange)="habitName.set($event)"
+                    [disabled]="isLoading() || isSaving()"
+                ></ion-input>
+                <ion-button
+                    slot="end"
+                    color="primary"
+                    fill="solid"
+                    shape="round"
+                    aria-label="Agregar habito"
+                    [disabled]="isLoading() || isSaving()"
+                    (click)="addHabit()"
+                >
                     Agregar
                 </ion-button>
             </ion-item>
-            <ion-text color="medium">
-                <p class="validation">Plantilla base sin logica activa.</p>
-            </ion-text>
+            @if (validationMessage()) {
+                <ion-text color="danger">
+                    <p class="validation">{{ validationMessage() }}</p>
+                </ion-text>
+            }
         </section>
 
         <section class="progress">
-            <p>0 de 3 configurados</p>
-            <ion-progress-bar value="0"></ion-progress-bar>
+            <p>{{ progressLabel() }}</p>
+            <ion-progress-bar [value]="progressValue()"></ion-progress-bar>
         </section>
 
         <section class="list">
-            <ion-list lines="none">
-                <ion-item class="habit-item">
-                    <ion-label>Tu lista aparecera aqui cuando implementemos logica.</ion-label>
-                </ion-item>
-            </ion-list>
+            @if (isLoading()) {
+                <ion-text color="medium">
+                    <p>Cargando habitos...</p>
+                </ion-text>
+            } @else {
+                <ion-list lines="none">
+                    @if (habits().length) {
+                        @for (habit of habits(); track $index) {
+                            <ion-item class="habit-item">
+                                <ion-label>{{ habit }}</ion-label>
+                                <ion-button
+                                    slot="end"
+                                    fill="clear"
+                                    color="danger"
+                                    [disabled]="isSaving()"
+                                    (click)="removeHabit($index)"
+                                >
+                                    Quitar
+                                </ion-button>
+                            </ion-item>
+                        }
+                    } @else {
+                        <ion-item class="habit-item">
+                            <ion-label>Agrega entre 1 y 3 habitos para iniciar.</ion-label>
+                        </ion-item>
+                    }
+                </ion-list>
+            }
         </section>
 
-        <ion-button class="continue-btn" color="primary" expand="block" routerLink="/tabs/dashboard">
-            Continuar
+        <ion-button
+            class="continue-btn"
+            color="primary"
+            expand="block"
+            [disabled]="isLoading() || isSaving()"
+            (click)="saveHabits()"
+        >
+            {{ isSaving() ? 'Guardando...' : 'Continuar' }}
         </ion-button>
     </main>
 </ion-content>
