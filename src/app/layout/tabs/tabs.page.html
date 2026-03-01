@@ -7,19 +7,26 @@
 
     <ion-content>
         <ion-list lines="none">
-            @for (item of menuItems; track item.link) {
-                <ion-menu-toggle autoHide="true">
-                    <ion-item
-                        button
-                        [routerLink]="item.link"
-                        routerLinkActive="menu-item-active"
-                        class="menu-item"
-                    >
-                        <ion-icon slot="start" [name]="item.icon"></ion-icon>
-                        <ion-label>{{ item.label }}</ion-label>
-                    </ion-item>
-                </ion-menu-toggle>
-            }
+            <ion-menu-toggle autoHide="true">
+                <ion-item button routerLink="/tabs/dashboard" routerLinkActive="menu-item-active" class="menu-item">
+                    <ion-label>Dashboard</ion-label>
+                </ion-item>
+            </ion-menu-toggle>
+            <ion-menu-toggle autoHide="true">
+                <ion-item button routerLink="/tabs/habits" routerLinkActive="menu-item-active" class="menu-item">
+                    <ion-label>Habitos</ion-label>
+                </ion-item>
+            </ion-menu-toggle>
+            <ion-menu-toggle autoHide="true">
+                <ion-item button routerLink="/tabs/history" routerLinkActive="menu-item-active" class="menu-item">
+                    <ion-label>Historial</ion-label>
+                </ion-item>
+            </ion-menu-toggle>
+            <ion-menu-toggle autoHide="true">
+                <ion-item button routerLink="/tabs/settings" routerLinkActive="menu-item-active" class="menu-item">
+                    <ion-label>Configuracion</ion-label>
+                </ion-item>
+            </ion-menu-toggle>
         </ion-list>
     </ion-content>
 </ion-menu>

@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import {
     IonContent,
     IonHeader,
-    IonIcon,
     IonItem,
     IonLabel,
     IonList,
@@ -13,13 +12,6 @@ import {
     IonTitle,
     IonToolbar,
 } from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import {
-    calendarOutline,
-    homeOutline,
-    settingsOutline,
-    sparklesOutline,
-} from 'ionicons/icons';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
@@ -36,7 +28,6 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
         IonContent,
         IonList,
         IonItem,
-        IonIcon,
         IonLabel,
         IonMenuToggle,
         IonRouterOutlet,
@@ -45,19 +36,5 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
     styleUrl: './tabs.page.scss',
 })
 export class TabsPage {
-    protected readonly menuItems = [
-        { label: 'Dashboard', icon: 'home-outline', link: '/tabs/dashboard' },
-        { label: 'Gestionar habitos', icon: 'sparkles-outline', link: '/tabs/habits' },
-        { label: 'Historial', icon: 'calendar-outline', link: '/tabs/history' },
-        { label: 'Configuracion', icon: 'settings-outline', link: '/tabs/settings' },
-    ];
 
-    constructor() {
-        addIcons({
-            homeOutline,
-            sparklesOutline,
-            calendarOutline,
-            settingsOutline,
-        });
-    }
 }

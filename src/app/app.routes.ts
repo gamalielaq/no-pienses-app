@@ -1,11 +1,10 @@
 import { Routes } from '@angular/router';
-import { OnboardingGuard } from './core/guards/onboarding.guard';
 
 export const routes: Routes = [
     {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'onboarding',
+        redirectTo: 'tabs',
     },
     {
         path: 'onboarding',
@@ -36,7 +35,6 @@ export const routes: Routes = [
     },
     {
         path: 'tabs',
-        canActivate: [OnboardingGuard],
         loadComponent: () => import('./layout/tabs/tabs.page').then((m) => m.TabsPage),
         children: [
             {
