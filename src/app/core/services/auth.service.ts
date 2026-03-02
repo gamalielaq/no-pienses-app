@@ -10,7 +10,8 @@ import {
     signInWithRedirect,
     signOut,
 } from 'firebase/auth';
-import { firebaseAuth } from '../firebase/firebase';
+import { doc, setDoc } from 'firebase/firestore';
+import { firebaseAuth, firestoreDb } from '../firebase/firebase';
 
 @Injectable({
     providedIn: 'root',
@@ -30,6 +31,9 @@ export class AuthService {
 
         onAuthStateChanged(firebaseAuth, (user) => {
             this.currentUser = user;
+            if (user) {
+                void this.syncUserProfile(user);
+            }
             if (!this.authReadyResolved) {
                 this.authReadyResolved = true;
                 this.resolveAuthReady?.();
@@ -65,5 +69,23 @@ export class AuthService {
 
     async logout(): Promise<void> {
         await signOut(firebaseAuth);
+    }
+
+    private async syncUserProfile(user: User): Promise<void> {
+        try {
+            await setDoc(
+                doc(firestoreDb, 'users', user.uid),
+                {
+                    uid: user.uid,
+                    displayName: user.displayName ?? user.email ?? 'Usuario',
+                    email: user.email ?? '',
+                    photoURL: user.photoURL ?? null,
+                    updatedAt: new Date().toISOString(),
+                },
+                { merge: true },
+            );
+        } catch (error) {
+            console.warn('[Auth] Failed to sync user profile:', error);
+        }
     }
 }

@@ -4,6 +4,7 @@ import {
     collection,
     doc,
     getDoc,
+    getDocs,
     onSnapshot,
     query,
     setDoc,
@@ -21,11 +22,19 @@ import {
 
 const MAX_PARTICIPANTS = 5;
 
+export interface IdentityUserLookup {
+    uid: string;
+    displayName: string;
+    email: string;
+    photoURL: string | null;
+}
+
 @Injectable({
     providedIn: 'root',
 })
 export class IdentityChallengesService {
     private readonly challengesCollection = collection(firestoreDb, 'identityChallenges');
+    private readonly usersCollection = collection(firestoreDb, 'users');
 
     getMyChallenges$(): Observable<IdentityChallenge[]> {
         return new Observable<IdentityChallenge[]>((subscriber) => {
@@ -213,6 +222,47 @@ export class IdentityChallengesService {
         });
     }
 
+    async searchUsers(term: string): Promise<IdentityUserLookup[]> {
+        const raw = term.trim();
+        const normalized = raw.toLowerCase();
+        if (!raw) {
+            return [];
+        }
+
+        const currentUid = this.requireUid();
+        const results = new Map<string, IdentityUserLookup>();
+
+        const byUid = await getDoc(doc(this.usersCollection, raw));
+        if (byUid.exists()) {
+            const parsed = this.parseUser(byUid.id, byUid.data());
+            if (parsed.uid !== currentUid) {
+                results.set(parsed.uid, parsed);
+            }
+        }
+
+        for (const value of [raw, normalized]) {
+            const emailQuery = query(this.usersCollection, where('email', '==', value));
+            const emailSnapshot = await getDocs(emailQuery);
+            emailSnapshot.docs.forEach((entry) => {
+                const parsed = this.parseUser(entry.id, entry.data());
+                if (parsed.uid !== currentUid) {
+                    results.set(parsed.uid, parsed);
+                }
+            });
+
+            const displayNameQuery = query(this.usersCollection, where('displayName', '==', value));
+            const displayNameSnapshot = await getDocs(displayNameQuery);
+            displayNameSnapshot.docs.forEach((entry) => {
+                const parsed = this.parseUser(entry.id, entry.data());
+                if (parsed.uid !== currentUid) {
+                    results.set(parsed.uid, parsed);
+                }
+            });
+        }
+
+        return [...results.values()].slice(0, 8);
+    }
+
     private parseChallenge(id: string, data: Record<string, unknown>): IdentityChallenge {
         return {
             id,
@@ -225,6 +275,19 @@ export class IdentityChallengesService {
             endDate: (data['endDate'] as Timestamp | undefined) ?? Timestamp.now(),
             maxParticipants: Number(data['maxParticipants'] ?? MAX_PARTICIPANTS),
             participantUids: (data['participantUids'] as string[] | undefined) ?? [],
+        };
+    }
+
+    private parseUser(uid: string, data: Record<string, unknown>): IdentityUserLookup {
+        const displayName = String(data['displayName'] ?? data['email'] ?? uid);
+        const email = String(data['email'] ?? '');
+        const photoURL = (data['photoURL'] as string | null | undefined) ?? null;
+
+        return {
+            uid,
+            displayName,
+            email,
+            photoURL,
         };
     }
 

@@ -37,6 +37,10 @@ export const tabsChildRoutes: Routes = [
             ),
     },
     {
+        path: 'friends',
+        loadComponent: () => import('../../features/friends/pages/friends.page').then((m) => m.FriendsPage),
+    },
+    {
         path: 'saturation',
         loadComponent: () =>
             import('../../features/saturation-mode/pages/saturation.page').then(

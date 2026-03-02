@@ -15,7 +15,13 @@ import {
     IonToolbar,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { flameOutline, lockClosedOutline, peopleOutline, sparklesOutline } from 'ionicons/icons';
+import {
+    flameOutline,
+    lockClosedOutline,
+    peopleOutline,
+    personAddOutline,
+    sparklesOutline,
+} from 'ionicons/icons';
 import { AuthService } from '../../../core/services/auth.service';
 import { HabitRecord } from '../../../core/services/habits.service';
 import { DashboardHabitsComponent } from '../components/dashboard-habits/dashboard-habits.component';
@@ -65,6 +71,7 @@ export class DashboardPage {
             flameOutline,
             lockClosedOutline,
             peopleOutline,
+            personAddOutline,
             sparklesOutline,
         });
     }
@@ -99,6 +106,10 @@ export class DashboardPage {
 
     protected goToIdentityChallenges(): void {
         void this.router.navigateByUrl('/identity-challenges');
+    }
+
+    protected goToFriends(): void {
+        void this.router.navigateByUrl('/friends');
     }
 
     protected async claimRewardAndGoCreateHabits(): Promise<void> {

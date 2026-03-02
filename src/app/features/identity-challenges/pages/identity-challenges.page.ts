@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { firebaseAuth } from '../../../core/firebase/firebase';
 import {
     IonAvatar,
     IonBadge,
@@ -30,7 +31,10 @@ import {
     IdentityChallenge,
     IdentityChallengeDuration,
 } from '../models/identity-challenge.model';
-import { IdentityChallengesService } from '../services/identity-challenges.service';
+import {
+    IdentityChallengesService,
+    IdentityUserLookup,
+} from '../services/identity-challenges.service';
 
 @Component({
     selector: 'app-identity-challenges-page',
@@ -72,12 +76,15 @@ export class IdentityChallengesPage {
     protected readonly isLoading = signal(false);
     protected readonly errorMessage = signal('');
     protected readonly successMessage = signal('');
+    protected readonly myUid = signal(firebaseAuth.currentUser?.uid ?? '');
 
     protected readonly createTitle = signal('');
     protected readonly createDescription = signal('');
     protected readonly createHabitId = signal('');
     protected readonly createDurationDays = signal<IdentityChallengeDuration>(21);
     protected readonly inviteUid = signal('');
+    protected readonly inviteSearchTerm = signal('');
+    protected readonly inviteSuggestions = signal<IdentityUserLookup[]>([]);
 
     protected readonly selectedChallenge = computed(() => {
         const selectedId = this.selectedChallengeId();
@@ -93,6 +100,7 @@ export class IdentityChallengesPage {
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: (challenges) => {
+                    this.myUid.set(firebaseAuth.currentUser?.uid ?? '');
                     this.challenges.set(challenges);
                     if (!this.selectedChallengeId() && challenges.length) {
                         this.selectedChallengeId.set(challenges[0].id);
@@ -188,6 +196,57 @@ export class IdentityChallengesPage {
             this.errorMessage.set(error instanceof Error ? error.message : 'No se pudo invitar al usuario.');
         } finally {
             this.isLoading.set(false);
+        }
+    }
+
+    protected async searchUsersToInvite(): Promise<void> {
+        const term = this.inviteSearchTerm().trim();
+        if (!term) {
+            this.inviteSuggestions.set([]);
+            return;
+        }
+
+        this.isLoading.set(true);
+        this.errorMessage.set('');
+        this.successMessage.set('');
+
+        try {
+            const users = await this.identityChallengesService.searchUsers(term);
+            this.inviteSuggestions.set(users);
+            if (!users.length) {
+                this.errorMessage.set('No se encontraron usuarios. Usa UID manual si no aparece.');
+            }
+        } catch (error) {
+            console.error('[IdentityChallenges] user search failed:', error);
+            this.errorMessage.set(
+                'No se pudo buscar usuarios (verifica reglas Firestore). Puedes invitar por UID manual.',
+            );
+        } finally {
+            this.isLoading.set(false);
+        }
+    }
+
+    protected selectInviteUser(user: IdentityUserLookup): void {
+        this.inviteUid.set(user.uid);
+        this.inviteSuggestions.set([]);
+        this.inviteSearchTerm.set(user.email || user.displayName || user.uid);
+        this.successMessage.set('Usuario seleccionado para invitacion.');
+        this.errorMessage.set('');
+    }
+
+    protected async copyMyUid(): Promise<void> {
+        const uid = this.myUid();
+        if (!uid) {
+            return;
+        }
+
+        try {
+            await navigator.clipboard.writeText(uid);
+            this.successMessage.set('Tu UID fue copiado.');
+            this.errorMessage.set('');
+        } catch (error) {
+            console.error('[IdentityChallenges] copy uid failed:', error);
+            this.errorMessage.set('No se pudo copiar UID. Copialo manualmente.');
         }
     }
 

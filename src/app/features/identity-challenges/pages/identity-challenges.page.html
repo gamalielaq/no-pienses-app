@@ -11,6 +11,23 @@
     <main class="identity-challenges">
         <ion-card>
             <ion-card-header>
+                <ion-card-title>Tu identidad en retos</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+                <ion-item lines="none">
+                    <ion-label>
+                        <h3>Tu UID</h3>
+                        <p>{{ myUid() || 'Sin sesion activa' }}</p>
+                    </ion-label>
+                    <ion-button slot="end" fill="outline" [disabled]="!myUid()" (click)="copyMyUid()">
+                        Copiar UID
+                    </ion-button>
+                </ion-item>
+            </ion-card-content>
+        </ion-card>
+
+        <ion-card>
+            <ion-card-header>
                 <ion-card-title>Crear reto de identidad</ion-card-title>
             </ion-card-header>
             <ion-card-content>
@@ -106,6 +123,37 @@
                             Validar riesgo
                         </ion-button>
                     </div>
+
+                    <ion-item lines="none" class="ion-margin-top">
+                        <ion-label position="stacked">Buscar por email/displayName</ion-label>
+                        <ion-input
+                            [ngModel]="inviteSearchTerm()"
+                            (ngModelChange)="inviteSearchTerm.set($event)"
+                        ></ion-input>
+                        <ion-button slot="end" fill="outline" [disabled]="isLoading()" (click)="searchUsersToInvite()">
+                            Buscar
+                        </ion-button>
+                    </ion-item>
+
+                    @if (inviteSuggestions().length) {
+                        <ion-list lines="none">
+                            @for (user of inviteSuggestions(); track user.uid) {
+                                <ion-item button (click)="selectInviteUser(user)">
+                                    <ion-avatar slot="start">
+                                        @if (user.photoURL) {
+                                            <img [src]="user.photoURL" [alt]="user.displayName" />
+                                        } @else {
+                                            <img src="/cerebro.png" alt="Avatar usuario" />
+                                        }
+                                    </ion-avatar>
+                                    <ion-label>
+                                        <h3>{{ user.displayName }}</h3>
+                                        <p>{{ user.email || user.uid }}</p>
+                                    </ion-label>
+                                </ion-item>
+                            }
+                        </ion-list>
+                    }
 
                     <ion-item lines="none" class="ion-margin-top">
                         <ion-label position="stacked">Invitar por UID (max 5)</ion-label>

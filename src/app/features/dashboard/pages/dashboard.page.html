@@ -5,6 +5,9 @@
         </ion-buttons>
         <ion-title>{{ todayLabel }}</ion-title>
         <ion-buttons slot="end">
+            <ion-button fill="clear" class="identity-indicator-btn" (click)="goToFriends()">
+                <ion-icon name="person-add-outline"></ion-icon>
+            </ion-button>
             <ion-button fill="clear" class="identity-indicator-btn" (click)="goToIdentityChallenges()">
                 <ion-icon name="people-outline"></ion-icon>
             </ion-button>
