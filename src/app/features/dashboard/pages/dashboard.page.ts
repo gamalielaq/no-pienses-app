@@ -11,7 +11,6 @@ import {
     IonModal,
     IonText,
     IonMenuButton,
-    IonTitle,
     IonToolbar,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -38,7 +37,6 @@ import { DashboardHabitsService } from '../services/dashboard-habits.service';
         IonBadge,
         IonIcon,
         IonMenuButton,
-        IonTitle,
         IonContent,
         IonModal,
         IonText,
@@ -48,7 +46,6 @@ import { DashboardHabitsService } from '../services/dashboard-habits.service';
     styleUrl: './dashboard.page.scss',
 })
 export class DashboardPage {
-    protected readonly todayLabel = this.buildTodayLabel();
     protected readonly habits = signal<HabitRecord[]>([]);
     protected readonly completedTodayIds = signal<Set<string>>(new Set<string>());
     protected readonly pendingHabitIds = signal<Set<string>>(new Set<string>());
@@ -114,6 +111,10 @@ export class DashboardPage {
 
     protected goToFriends(): void {
         void this.router.navigateByUrl('/friends');
+    }
+
+    protected goToHistory(): void {
+        void this.router.navigateByUrl('/history');
     }
 
     protected async claimRewardAndGoCreateHabits(): Promise<void> {
@@ -228,12 +229,5 @@ export class DashboardPage {
         }
     }
 
-    private buildTodayLabel(): string {
-        const raw = new Intl.DateTimeFormat('es-ES', {
-            weekday: 'long',
-            day: 'numeric',
-            month: 'short',
-        }).format(new Date());
-        return raw.charAt(0).toUpperCase() + raw.slice(1);
-    }
+    
 }

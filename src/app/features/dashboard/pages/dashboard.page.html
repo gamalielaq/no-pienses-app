@@ -3,8 +3,14 @@
         <ion-buttons slot="start">
             <ion-menu-button autoHide="false"></ion-menu-button>
         </ion-buttons>
-        <ion-title>{{ todayLabel }}</ion-title>
+    
         <ion-buttons slot="end">
+            <ion-button fill="clear" class="streak-indicator-btn" (click)="goToHistory()">
+                <ion-badge color="warning" class="streak-badge">
+                    <ion-icon name="flame-outline"></ion-icon>
+                    <span>{{ streakDays() }}</span>
+                </ion-badge>
+            </ion-button>
             <ion-button fill="clear" class="identity-indicator-btn" (click)="goToFriends()">
                 <ion-icon name="person-add-outline"></ion-icon>
             </ion-button>

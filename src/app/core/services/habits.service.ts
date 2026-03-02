@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { collection, deleteDoc, doc, getDoc, getDocs, setDoc, writeBatch } from 'firebase/firestore';
+import { Timestamp, collection, deleteDoc, doc, getDoc, getDocs, setDoc, writeBatch } from 'firebase/firestore';
 import { firestoreDb } from '../firebase/firebase';
 import { AuthService } from './auth.service';
 
@@ -87,14 +87,16 @@ export class HabitsService {
         const historyRef = collection(firestoreDb, 'users', uid, 'history');
         const snapshot = await getDocs(historyRef);
 
-        return snapshot.docs.map((entry) => {
-            const data = entry.data() as HabitHistoryRecord;
-            return {
-                habitId: data.habitId,
-                date: data.date,
-                completed: Boolean(data.completed),
-            } satisfies HabitHistoryRecord;
-        });
+        return snapshot.docs
+            .map((entry) => {
+                const data = entry.data() as Record<string, unknown>;
+                return {
+                    habitId: String(data['habitId'] ?? ''),
+                    date: this.normalizeDateKey(data['date']),
+                    completed: Boolean(data['completed']),
+                } satisfies HabitHistoryRecord;
+            })
+            .filter((entry) => !!entry.habitId && !!entry.date);
     }
 
     async setHistoryCompletion(habitId: string, dateKey: string, completed: boolean): Promise<void> {
@@ -162,5 +164,38 @@ export class HabitsService {
             throw new Error('No hay usuario autenticado.');
         }
         return uid;
+    }
+
+    private normalizeDateKey(rawDate: unknown): string {
+        if (typeof rawDate === 'string') {
+            const value = rawDate.trim();
+            if (!value) {
+                return '';
+            }
+            return value.length >= 10 ? value.slice(0, 10) : value;
+        }
+
+        if (rawDate instanceof Timestamp) {
+            return this.formatDateKey(rawDate.toDate());
+        }
+
+        if (
+            typeof rawDate === 'object' &&
+            rawDate !== null &&
+            'toDate' in rawDate &&
+            typeof (rawDate as { toDate?: unknown }).toDate === 'function'
+        ) {
+            const date = (rawDate as { toDate: () => Date }).toDate();
+            return this.formatDateKey(date);
+        }
+
+        return '';
+    }
+
+    private formatDateKey(date: Date): string {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }
 }

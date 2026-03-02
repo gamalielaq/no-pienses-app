@@ -11,6 +11,7 @@ import {
     IonProgressBar,
     IonSkeletonText,
     IonText,
+    IonTitle
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { flameOutline } from 'ionicons/icons';
@@ -31,6 +32,7 @@ import { HabitRecord } from '../../../../core/services/habits.service';
         IonSkeletonText,
         IonButton,
         RouterLink,
+        IonTitle,
     ],
     templateUrl: './dashboard-habits.component.html',
     styleUrl: './dashboard-habits.component.scss',
@@ -45,6 +47,7 @@ export class DashboardHabitsComponent {
     readonly errorMessage = input('');
     readonly habitToggle = output<{ habitId: string; checked: boolean | undefined }>();
     readonly seedStreak = output<void>();
+    protected readonly todayLabel = this.buildTodayLabel();
 
     protected readonly completedCount = computed(() => {
         const completed = this.completedTodayIds();
@@ -76,5 +79,14 @@ export class DashboardHabitsComponent {
 
     constructor() {
         addIcons({ flameOutline });
+    }
+
+    private buildTodayLabel(): string {
+        const raw = new Intl.DateTimeFormat('es-ES', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'short',
+        }).format(new Date());
+        return raw.charAt(0).toUpperCase() + raw.slice(1);
     }
 }

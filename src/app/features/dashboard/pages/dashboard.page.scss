@@ -20,6 +20,18 @@ ion-title {
     margin-right: 0.25rem;
 }
 
+.streak-indicator-btn {
+    --padding-start: 0.1rem;
+    --padding-end: 0.1rem;
+}
+
+.streak-badge {
+    margin-right: 0.25rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
 .unlock-badge {
     margin-right: 0.55rem;
     display: inline-flex;
