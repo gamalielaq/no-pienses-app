@@ -84,6 +84,10 @@ export class DashboardPage {
         void this.toggleHabit(event.habitId, event.checked);
     }
 
+    protected onSeedStreak(): void {
+        void this.seedStreakForTesting();
+    }
+
     protected async onUnlockIndicatorClick(): Promise<void> {
         if (this.habitLimitUnlocked()) {
             const alert = await this.alertController.create({
@@ -196,6 +200,31 @@ export class DashboardPage {
                 return copy;
             });
             this.isUpdating.set(false);
+        }
+    }
+
+    private async seedStreakForTesting(): Promise<void> {
+        if (this.isLoading() || this.isUpdating()) {
+            return;
+        }
+
+        this.isLoading.set(true);
+        this.errorMessage.set('');
+
+        try {
+            await this.dashboardHabitsService.seedSevenDayStreakForTesting();
+            await this.loadDashboard();
+            const alert = await this.alertController.create({
+                header: 'Test aplicado',
+                message: 'Se genero una racha de 7 dias para tus habitos actuales.',
+                buttons: ['OK'],
+            });
+            await alert.present();
+        } catch (error) {
+            console.error('[Dashboard] Seed streak failed:', error);
+            this.errorMessage.set(error instanceof Error ? error.message : 'No se pudo generar la racha de prueba.');
+        } finally {
+            this.isLoading.set(false);
         }
     }
 

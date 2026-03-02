@@ -44,6 +44,7 @@ export class DashboardHabitsComponent {
     readonly pendingHabitIds = input<Set<string>>(new Set<string>());
     readonly errorMessage = input('');
     readonly habitToggle = output<{ habitId: string; checked: boolean | undefined }>();
+    readonly seedStreak = output<void>();
 
     protected readonly completedCount = computed(() => {
         const completed = this.completedTodayIds();
@@ -67,6 +68,10 @@ export class DashboardHabitsComponent {
 
     protected isHabitPending(habitId: string): boolean {
         return this.pendingHabitIds().has(habitId);
+    }
+
+    protected onSeedStreak(): void {
+        this.seedStreak.emit();
     }
 
     constructor() {

@@ -22,7 +22,9 @@ export class DashboardHabitsService {
         const habits = await this.habitsService.getUserHabits();
         const activeHabitIds = new Set(habits.map((habit) => habit.id));
         const todayKey = this.getTodayDateKey();
-        const history = (await this.habitsService.getUserHistory()).filter((entry) => !!entry.completed);
+        const history = (await this.habitsService.getUserHistory()).filter(
+            (entry) => !!entry.completed && activeHabitIds.has(entry.habitId),
+        );
 
         const completedTodayIds = new Set(
             history
@@ -57,6 +59,29 @@ export class DashboardHabitsService {
             habitLimitUnlocked: true,
             rewardClaimed: true,
         });
+    }
+
+    async seedSevenDayStreakForTesting(): Promise<void> {
+        const habits = await this.habitsService.getUserHabits();
+        if (!habits.length) {
+            throw new Error('No hay habitos para generar racha.');
+        }
+
+        const writes: Array<Promise<void>> = [];
+        for (let offset = 6; offset >= 0; offset -= 1) {
+            const date = new Date();
+            date.setDate(date.getDate() - offset);
+            const dateKey = this.formatDateKey(date);
+
+            habits.forEach((habit) => {
+                writes.push(this.habitsService.setHistoryCompletion(habit.id, dateKey, true));
+                if (offset === 0) {
+                    writes.push(this.habitsService.setHabitCompletedToday(habit.id, true));
+                }
+            });
+        }
+
+        await Promise.all(writes);
     }
 
     private getTodayDateKey(): string {
