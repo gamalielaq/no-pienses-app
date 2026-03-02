@@ -8,21 +8,14 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-    <main class="dashboard">
-        <section class="section-copy">
-            <h1>Base de trabajo</h1>
-            <p>Esta vista esta limpia y lista para reimplementar logica.</p>
-        </section>
-
-        <section class="section-habits">
-            <p>No hay datos cargados en esta version base.</p>
-        </section>
-
-        <section class="section-progress">
-            <ion-button expand="block" routerLink="/habits">Ir a Habitos</ion-button>
-            <ion-button expand="block" fill="outline" routerLink="/history">
-                Ir a Historial
-            </ion-button>
-        </section>
-    </main>
+    <app-dashboard-habits
+        [habits]="habits()"
+        [completedTodayIds]="completedTodayIds()"
+        [streakDays]="streakDays()"
+        [isLoading]="isLoading()"
+        [isUpdating]="isUpdating()"
+        [pendingHabitIds]="pendingHabitIds()"
+        [errorMessage]="errorMessage()"
+        (habitToggle)="onHabitToggle($event)"
+    ></app-dashboard-habits>
 </ion-content>

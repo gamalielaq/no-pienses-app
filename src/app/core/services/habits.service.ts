@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { collection, doc, getDocs, setDoc, writeBatch } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDocs, setDoc, writeBatch } from 'firebase/firestore';
 import { firestoreDb } from '../firebase/firebase';
 import { AuthService } from './auth.service';
 
@@ -9,6 +9,12 @@ export interface HabitRecord {
     streak: number;
     completedToday: boolean;
     createdAt: string;
+}
+
+export interface HabitHistoryRecord {
+    habitId: string;
+    date: string;
+    completed: boolean;
 }
 
 @Injectable({
@@ -68,6 +74,49 @@ export class HabitsService {
         );
 
         await batch.commit();
+    }
+
+    async getUserHistory(): Promise<HabitHistoryRecord[]> {
+        const uid = this.requireUid();
+        const historyRef = collection(firestoreDb, 'users', uid, 'history');
+        const snapshot = await getDocs(historyRef);
+
+        return snapshot.docs.map((entry) => {
+            const data = entry.data() as HabitHistoryRecord;
+            return {
+                habitId: data.habitId,
+                date: data.date,
+                completed: Boolean(data.completed),
+            } satisfies HabitHistoryRecord;
+        });
+    }
+
+    async setHistoryCompletion(habitId: string, dateKey: string, completed: boolean): Promise<void> {
+        const uid = this.requireUid();
+        const historyId = `${habitId}_${dateKey}`;
+        const historyRef = doc(firestoreDb, 'users', uid, 'history', historyId);
+
+        if (completed) {
+            await setDoc(historyRef, {
+                habitId,
+                date: dateKey,
+                completed: true,
+            });
+        } else {
+            await deleteDoc(historyRef);
+        }
+    }
+
+    async setHabitCompletedToday(habitId: string, completed: boolean): Promise<void> {
+        const uid = this.requireUid();
+        await setDoc(
+            doc(firestoreDb, 'users', uid, 'habits', habitId),
+            {
+                completedToday: completed,
+                updatedAt: new Date().toISOString(),
+            },
+            { merge: true },
+        );
     }
 
     private requireUid(): string {
