@@ -38,7 +38,7 @@ export class CreateHabitsPage {
     habitsService = inject(HabitsService);
     router = inject(Router);
 
-    readonly maxHabits = 3;
+    readonly maxHabits = signal(3);
     readonly habitName = signal('');
     readonly habits = signal<string[]>([]);
     readonly validationMessage = signal('');
@@ -46,10 +46,13 @@ export class CreateHabitsPage {
     readonly isSaving = signal(false);
 
     readonly progressLabel = computed(
-        () => `${this.habits().length} de ${this.maxHabits} configurados`,
+        () => `${this.habits().length} de ${this.maxHabits()} configurados`,
     );
-    
-    protected readonly progressValue = computed(() => this.habits().length / this.maxHabits);
+
+    protected readonly progressValue = computed(() => {
+        const max = this.maxHabits();
+        return max ? this.habits().length / max : 0;
+    });
 
     async ionViewWillEnter(): Promise<void> {
         this.isLoading.set(true);
@@ -62,8 +65,12 @@ export class CreateHabitsPage {
                 return;
             }
 
+            const progress = await this.habitsService.getUserProgress();
+            const limit = progress.habitLimitUnlocked ? 5 : 3;
+            this.maxHabits.set(limit);
+
             const existing = await this.habitsService.getUserHabits();
-            this.habits.set(existing.map((item) => item.name).slice(0, this.maxHabits));
+            this.habits.set(existing.map((item) => item.name).slice(0, limit));
 
         } catch (error) {
             console.error('[CreateHabits] Error loading habits:', error);
@@ -81,8 +88,8 @@ export class CreateHabitsPage {
             return;
         }
 
-        if (this.habits().length >= this.maxHabits) {
-            this.validationMessage.set('Solo puedes registrar 3 habitos base.');
+        if (this.habits().length >= this.maxHabits()) {
+            this.validationMessage.set(`Solo puedes registrar ${this.maxHabits()} habitos.`);
             return;
         }
 

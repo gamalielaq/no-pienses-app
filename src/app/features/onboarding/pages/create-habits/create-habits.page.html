@@ -2,7 +2,7 @@
     <main class="create-habits">
         <section class="copy">
             <h1>Define tus habitos base</h1>
-            <p>Empieza con lo minimo. Tres son suficientes.</p>
+            <p>Puedes configurar hasta {{ maxHabits() }} habitos.</p>
         </section>
 
         <section class="creator">
@@ -62,7 +62,7 @@
                         }
                     } @else {
                         <ion-item class="habit-item">
-                            <ion-label>Agrega entre 1 y 3 habitos para iniciar.</ion-label>
+                            <ion-label>Agrega entre 1 y {{ maxHabits() }} habitos para iniciar.</ion-label>
                         </ion-item>
                     }
                 </ion-list>

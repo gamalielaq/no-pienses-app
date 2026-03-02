@@ -6,6 +6,10 @@ export interface DashboardSnapshot {
     completedTodayIds: Set<string>;
     streakDays: number;
     todayKey: string;
+    habitLimit: number;
+    habitLimitUnlocked: boolean;
+    rewardClaimed: boolean;
+    canUnlockByStreak: boolean;
 }
 
 @Injectable({
@@ -25,12 +29,20 @@ export class DashboardHabitsService {
                 .filter((entry) => entry.date === todayKey && activeHabitIds.has(entry.habitId))
                 .map((entry) => entry.habitId),
         );
+        const streakDays = this.calculateStreakDays(habits, history, todayKey);
+        const progress = await this.habitsService.getUserProgress();
+        const canUnlockByStreak = streakDays >= 7;
+        const habitLimitUnlocked = progress.habitLimitUnlocked || canUnlockByStreak;
 
         return {
             habits,
             completedTodayIds,
-            streakDays: this.calculateStreakDays(habits, history, todayKey),
+            streakDays,
             todayKey,
+            habitLimit: habitLimitUnlocked ? 5 : 3,
+            habitLimitUnlocked,
+            rewardClaimed: progress.rewardClaimed,
+            canUnlockByStreak,
         };
     }
 
@@ -38,6 +50,13 @@ export class DashboardHabitsService {
         const todayKey = this.getTodayDateKey();
         await this.habitsService.setHistoryCompletion(habitId, todayKey, completed);
         await this.habitsService.setHabitCompletedToday(habitId, completed);
+    }
+
+    async claimUnlockReward(): Promise<void> {
+        await this.habitsService.updateUserProgress({
+            habitLimitUnlocked: true,
+            rewardClaimed: true,
+        });
     }
 
     private getTodayDateKey(): string {

@@ -3,7 +3,18 @@
         <ion-buttons slot="start">
             <ion-menu-button autoHide="false"></ion-menu-button>
         </ion-buttons>
-        <ion-title>Dashboard</ion-title>
+        <ion-title>{{ todayLabel }}</ion-title>
+        <ion-buttons slot="end">
+            <ion-button fill="clear" class="identity-indicator-btn" (click)="goToIdentityChallenges()">
+                <ion-icon name="people-outline"></ion-icon>
+            </ion-button>
+            <ion-button fill="clear" class="unlock-indicator-btn" (click)="onUnlockIndicatorClick()">
+                <ion-badge [color]="habitLimitUnlocked() ? 'success' : 'medium'" class="unlock-badge">
+                    <ion-icon [name]="habitLimitUnlocked() ? 'sparkles-outline' : 'lock-closed-outline'"></ion-icon>
+                    <span>{{ habitLimit() }}</span>
+                </ion-badge>
+            </ion-button>
+        </ion-buttons>
     </ion-toolbar>
 </ion-header>
 
@@ -18,4 +29,27 @@
         [errorMessage]="errorMessage()"
         (habitToggle)="onHabitToggle($event)"
     ></app-dashboard-habits>
+
+    <ion-modal [isOpen]="showUnlockRewardModal()" [backdropDismiss]="false">
+        <ng-template>
+            <ion-content class="reward-modal-content">
+                <div class="reward-modal-body">
+                    <ion-text color="warning">
+                        <h2>&#x1F525; 7 dias consecutivos</h2>
+                    </ion-text>
+                    <ion-text color="light">
+                        <p>Has demostrado constancia real.</p>
+                        <p>Ahora puedes agregar 2 habitos mas.</p>
+                    </ion-text>
+                    <ion-button expand="block" color="primary" (click)="claimRewardAndGoCreateHabits()">
+                        Agregar habitos
+                    </ion-button>
+                    <ion-button expand="block" fill="outline" color="medium" (click)="claimRewardAndContinue()">
+                        Continuar
+                    </ion-button>
+                </div>
+            </ion-content>
+        </ng-template>
+    </ion-modal>
 </ion-content>
+

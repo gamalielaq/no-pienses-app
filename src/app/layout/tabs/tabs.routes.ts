@@ -30,6 +30,13 @@ export const tabsChildRoutes: Routes = [
             import('../../features/settings/pages/settings.page').then((m) => m.SettingsPage),
     },
     {
+        path: 'identity-challenges',
+        loadComponent: () =>
+            import('../../features/identity-challenges/pages/identity-challenges.page').then(
+                (m) => m.IdentityChallengesPage,
+            ),
+    },
+    {
         path: 'saturation',
         loadComponent: () =>
             import('../../features/saturation-mode/pages/saturation.page').then(

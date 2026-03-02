@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { collection, deleteDoc, doc, getDocs, setDoc, writeBatch } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDoc, getDocs, setDoc, writeBatch } from 'firebase/firestore';
 import { firestoreDb } from '../firebase/firebase';
 import { AuthService } from './auth.service';
 
@@ -15,6 +15,12 @@ export interface HabitHistoryRecord {
     habitId: string;
     date: string;
     completed: boolean;
+}
+
+export interface UserProgressRecord {
+    onboardingCompleted: boolean;
+    habitLimitUnlocked: boolean;
+    rewardClaimed: boolean;
 }
 
 @Injectable({
@@ -113,6 +119,37 @@ export class HabitsService {
             doc(firestoreDb, 'users', uid, 'habits', habitId),
             {
                 completedToday: completed,
+                updatedAt: new Date().toISOString(),
+            },
+            { merge: true },
+        );
+    }
+
+    async getUserProgress(): Promise<UserProgressRecord> {
+        const uid = this.requireUid();
+        const snapshot = await getDoc(doc(firestoreDb, 'users', uid));
+        if (!snapshot.exists()) {
+            return {
+                onboardingCompleted: false,
+                habitLimitUnlocked: false,
+                rewardClaimed: false,
+            };
+        }
+
+        const data = snapshot.data() as Partial<UserProgressRecord>;
+        return {
+            onboardingCompleted: !!data.onboardingCompleted,
+            habitLimitUnlocked: !!data.habitLimitUnlocked,
+            rewardClaimed: !!data.rewardClaimed,
+        };
+    }
+
+    async updateUserProgress(patch: Partial<UserProgressRecord>): Promise<void> {
+        const uid = this.requireUid();
+        await setDoc(
+            doc(firestoreDb, 'users', uid),
+            {
+                ...patch,
                 updatedAt: new Date().toISOString(),
             },
             { merge: true },

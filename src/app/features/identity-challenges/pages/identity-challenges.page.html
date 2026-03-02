@@ -1,0 +1,142 @@
+<ion-header translucent="true">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button autoHide="false"></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Identity Challenges</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+    <main class="identity-challenges">
+        <ion-card>
+            <ion-card-header>
+                <ion-card-title>Crear reto de identidad</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+                <ion-item lines="none">
+                    <ion-label position="stacked">Titulo</ion-label>
+                    <ion-input
+                        [ngModel]="createTitle()"
+                        (ngModelChange)="createTitle.set($event)"
+                        placeholder="Ej: Construyendo disciplina"
+                    ></ion-input>
+                </ion-item>
+                <ion-item lines="none">
+                    <ion-label position="stacked">Descripcion</ion-label>
+                    <ion-input
+                        [ngModel]="createDescription()"
+                        (ngModelChange)="createDescription.set($event)"
+                        placeholder="Proposito del reto"
+                    ></ion-input>
+                </ion-item>
+                <ion-item lines="none">
+                    <ion-label position="stacked">habitId (referencia existente)</ion-label>
+                    <ion-input
+                        [ngModel]="createHabitId()"
+                        (ngModelChange)="createHabitId.set($event)"
+                        placeholder="ID del habito"
+                    ></ion-input>
+                </ion-item>
+
+                <ion-segment
+                    [ngModel]="createDurationDays()"
+                    (ngModelChange)="createDurationDays.set($event)"
+                    class="ion-margin-top"
+                >
+                    <ion-segment-button [value]="21">21 dias</ion-segment-button>
+                    <ion-segment-button [value]="30">30 dias</ion-segment-button>
+                    <ion-segment-button [value]="60">60 dias</ion-segment-button>
+                </ion-segment>
+
+                <ion-button class="ion-margin-top" expand="block" [disabled]="isLoading()" (click)="createChallenge()">
+                    Crear reto
+                </ion-button>
+            </ion-card-content>
+        </ion-card>
+
+        @if (errorMessage()) {
+            <ion-text color="danger">
+                <p>{{ errorMessage() }}</p>
+            </ion-text>
+        }
+        @if (successMessage()) {
+            <ion-text color="success">
+                <p>{{ successMessage() }}</p>
+            </ion-text>
+        }
+
+        <ion-card>
+            <ion-card-header>
+                <ion-card-title>Mis retos</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+                @if (challenges().length) {
+                    <ion-list lines="none">
+                        @for (challenge of challenges(); track challenge.id) {
+                            <ion-item button (click)="selectChallenge(challenge.id)">
+                                <ion-label>
+                                    <h2>{{ challenge.title }}</h2>
+                                    <p>{{ challenge.description }}</p>
+                                </ion-label>
+                                <ion-note slot="end">{{ challengeDaysLabel(challenge) }}</ion-note>
+                            </ion-item>
+                        }
+                    </ion-list>
+                } @else {
+                    <ion-text color="medium">
+                        <p>No tienes retos de identidad activos.</p>
+                    </ion-text>
+                }
+            </ion-card-content>
+        </ion-card>
+
+        @if (selectedChallenge(); as challenge) {
+            <ion-card>
+                <ion-card-header>
+                    <ion-card-title>{{ challenge.title }}</ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <p>{{ challenge.description }}</p>
+                    <ion-note>Dias activos: {{ challengeDaysLabel(challenge) }}</ion-note>
+
+                    <div class="actions ion-margin-top">
+                        <ion-button size="small" [disabled]="isLoading()" (click)="checkIn()">Check-in diario</ion-button>
+                        <ion-button size="small" fill="outline" [disabled]="isLoading()" (click)="validateRisk()">
+                            Validar riesgo
+                        </ion-button>
+                    </div>
+
+                    <ion-item lines="none" class="ion-margin-top">
+                        <ion-label position="stacked">Invitar por UID (max 5)</ion-label>
+                        <ion-input [ngModel]="inviteUid()" (ngModelChange)="inviteUid.set($event)"></ion-input>
+                        <ion-button slot="end" [disabled]="isLoading()" (click)="inviteParticipant()">
+                            Invitar
+                        </ion-button>
+                    </ion-item>
+
+                    <ion-list lines="none" class="ion-margin-top">
+                        @for (member of challenge.participants; track member.uid) {
+                            <ion-item>
+                                <ion-avatar slot="start">
+                                    @if (member.photoURL) {
+                                        <img [src]="member.photoURL" [alt]="member.displayName || member.uid" />
+                                    } @else {
+                                        <img src="/cerebro.png" alt="Avatar participante" />
+                                    }
+                                </ion-avatar>
+                                <ion-label>
+                                    <h3>{{ member.displayName || member.uid }}</h3>
+                                    <p>Streak: {{ member.currentStreak }}</p>
+                                </ion-label>
+                                <ion-badge slot="end" [color]="riskColor(member.riskLevel)">
+                                    {{ riskLabel(member.riskLevel) }}
+                                </ion-badge>
+                            </ion-item>
+                        }
+                    </ion-list>
+                </ion-card-content>
+            </ion-card>
+        }
+    </main>
+</ion-content>
