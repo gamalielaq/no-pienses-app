@@ -1,0 +1,61 @@
+<section class="board-shell">
+    <header class="board-shell__header">
+        <div>
+            <p class="board-shell__eyebrow">Chess Board</p>
+            <h2>Tablero principal</h2>
+        </div>
+
+        <div class="board-shell__status" [class.board-shell__status--alert]="state().isCheck">
+            {{ statusText() }}
+        </div>
+    </header>
+
+    <div class="board-wrapper">
+        <div class="board" role="grid" aria-label="Tablero de ajedrez">
+            @for (square of boardSquares(); track square.position) {
+                <app-square
+                    [piece]="square.piece"
+                    [isBlack]="square.isBlack"
+                    [isSelected]="selectedSquare() === square.position"
+                    [isPossibleMove]="isPossibleMove(square)"
+                    [isPossibleCapture]="isPossibleCapture(square)"
+                    [position]="square.position"
+                    [highlight]="isKingInCheck(square)"
+                    (squareClick)="handleSquareClick($event)"
+                    (squarePointerDown)="onDragStart($event)"
+                    (squarePointerEnter)="updateDragTarget($event)"
+                    (squarePointerUp)="completeDragFromSquare($event)"
+                ></app-square>
+            }
+        </div>
+
+        @if (showCheckmateAnimation()) {
+            <div class="explosion-overlay">
+                <div class="king-death" [ngStyle]="checkmateKingStyle()">
+                    <div class="dying-king">
+                        <div class="king-svg" [innerHTML]="checkmateKingSvg()"></div>
+                    </div>
+
+                    <div class="blood-explosion">
+                        @for (particle of explosionParticles(); track trackParticle($index)) {
+                            <div
+                                class="blood-particle"
+                                [style.left.%]="particle.x"
+                                [style.top.%]="particle.y"
+                                [style.width.px]="particle.size"
+                                [style.height.px]="particle.size"
+                                [style.animation-delay.s]="particle.delay"
+                                [style.background]="particle.color"
+                                [style.--dx.px]="particle.dx"
+                                [style.--dy.px]="particle.dy"
+                            ></div>
+                        }
+                    </div>
+
+                    <div class="blood-wave"></div>
+                    <div class="blood-wave wave2"></div>
+                </div>
+            </div>
+        }
+    </div>
+</section>

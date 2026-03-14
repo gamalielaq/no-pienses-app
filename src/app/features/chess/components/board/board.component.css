@@ -1,0 +1,278 @@
+:host {
+    display: block;
+    width: 100%;
+}
+
+.board-shell {
+    display: grid;
+    gap: 1.25rem;
+    width: 100%;
+}
+
+.board-shell__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.board-shell__eyebrow {
+    margin: 0 0 0.3rem;
+    color: #8b5a2b;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.board-shell__header h2 {
+    margin: 0;
+    font-size: clamp(1.5rem, 2vw, 2.2rem);
+    color: #1f2937;
+}
+
+.board-shell__status {
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(31, 41, 55, 0.08);
+    padding: 0.75rem 1rem;
+    font-weight: 700;
+    color: #334155;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.board-shell__status--alert {
+    background: #fde8e8;
+    color: #9f1239;
+}
+
+.board-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    width: min(100%, 760px);
+    max-width: 760px;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 10px solid #8b5a2b;
+    box-shadow:
+        0 18px 40px rgba(52, 35, 22, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.board__drag-preview {
+    position: fixed;
+    z-index: 60;
+    pointer-events: none;
+    filter: drop-shadow(0 18px 24px rgba(15, 23, 42, 0.24));
+}
+
+.board__drag-preview svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.explosion-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.king-death {
+    position: absolute;
+}
+
+.dying-king {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    z-index: 2;
+    animation: kingDeath 2.2s ease-out forwards;
+}
+
+.king-svg {
+    width: 92%;
+    height: 92%;
+    color: #c41e3a;
+    filter: drop-shadow(0 0 18px rgba(196, 30, 58, 0.65));
+    animation: kingAgony 0.22s infinite alternate;
+}
+
+.king-svg :is(text, .piece-main) {
+    fill: #c41e3a !important;
+    stroke: #5a0818 !important;
+}
+
+.king-svg .piece-detail,
+.king-svg .piece-detail-fill {
+    stroke: #8b0000 !important;
+    fill: #8b0000 !important;
+}
+
+.blood-explosion {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+.blood-particle {
+    position: absolute;
+    border-radius: 44% 56% 61% 39% / 41% 33% 67% 59%;
+    transform: translate(-50%, -50%) scale(0);
+    animation: bloodExplode 2.4s ease-out forwards;
+    opacity: 0;
+    box-shadow: 0 0 10px rgba(139, 0, 0, 0.5);
+}
+
+.blood-wave {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(196, 30, 58, 0.5);
+    transform: translate(-50%, -50%);
+    animation: bloodWave 2.2s ease-out forwards;
+    opacity: 0;
+    filter: blur(5px);
+}
+
+.wave2 {
+    animation: bloodWave 2.8s ease-out forwards;
+    background: rgba(139, 0, 0, 0.3);
+    width: 5px;
+    height: 5px;
+}
+
+@keyframes kingAgony {
+    0% {
+        transform: scale(1) rotate(0deg) translate(0, 0);
+        filter: brightness(1);
+    }
+
+    25% {
+        transform: scale(1.03) rotate(-1.6deg) translate(-1px, 0);
+        filter: brightness(1.15);
+    }
+
+    50% {
+        transform: scale(1.07) rotate(1.8deg) translate(1px, -1px);
+        filter: brightness(1.3);
+    }
+
+    75% {
+        transform: scale(1.1) rotate(-2.2deg) translate(-1px, 1px);
+        filter: brightness(1.42);
+    }
+
+    100% {
+        transform: scale(1.14) rotate(2.8deg) translate(1px, 0);
+        filter: brightness(1.58);
+    }
+}
+
+@keyframes kingDeath {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+        filter: blur(0);
+    }
+
+    20% {
+        opacity: 1;
+        transform: scale(1.04);
+        filter: blur(0);
+    }
+
+    45% {
+        opacity: 0.95;
+        transform: scale(1.16);
+        filter: blur(0.5px);
+    }
+
+    70% {
+        opacity: 0.65;
+        transform: scale(1.28);
+        filter: blur(1px);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(1.68);
+        filter: blur(4px);
+    }
+}
+
+@keyframes bloodExplode {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0);
+    }
+
+    18% {
+        opacity: 0.95;
+        transform: translate(-50%, -50%) scale(0.35);
+    }
+
+    55% {
+        opacity: 1;
+        transform: translate(
+                calc(-50% + var(--dx, 50px) * 0.6),
+                calc(-50% + var(--dy, 50px) * 0.6)
+            )
+            scale(1.65);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(calc(-50% + var(--dx, 100px) * 1.2), calc(-50% + var(--dy, 100px) * 1.2))
+            scale(0.42);
+    }
+}
+
+@keyframes bloodWave {
+    0% {
+        opacity: 0;
+        width: 10px;
+        height: 10px;
+    }
+
+    20% {
+        opacity: 0.9;
+        width: 40px;
+        height: 40px;
+    }
+
+    65% {
+        opacity: 0.45;
+        width: 140px;
+        height: 140px;
+    }
+
+    100% {
+        opacity: 0;
+        width: 240px;
+        height: 240px;
+    }
+}
+
+@media (max-width: 900px) {
+    .board-shell__header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .board {
+        width: min(100%, 94vw);
+    }
+}

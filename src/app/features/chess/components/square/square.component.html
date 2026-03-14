@@ -1,0 +1,22 @@
+<button
+    class="square"
+    type="button"
+    [attr.data-square-position]="position"
+    [class.square--light]="!isBlack"
+    [class.square--dark]="isBlack"
+    [class.square--selected]="isSelected"
+    [class.square--possible-move]="isPossibleMove && !isPossibleCapture"
+    [class.square--possible-capture]="isPossibleCapture"
+    [class.square--drag-source]="isSelected"
+    [class.square--highlight]="highlight"
+    (click)="onClick()"
+    (pointerdown)="onPointerDown($event)"
+    (pointerenter)="onPointerEnter()"
+    (pointerup)="onPointerUp()"
+>
+    @if (pieceSvg) {
+        <span class="square__piece" [innerHTML]="pieceSvg"></span>
+    }
+
+    <span class="square__label">{{ position }}</span>
+</button>
