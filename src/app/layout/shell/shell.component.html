@@ -1,0 +1,27 @@
+<div class="shell">
+    <aside class="shell__sidebar">
+        <div>
+            <p class="shell__eyebrow">Angular + PrimeNG</p>
+            <h1>Starter Workspace</h1>
+            <p class="shell__copy">
+                Base limpia para construir una app nueva con una arquitectura modular y escalable.
+            </p>
+        </div>
+
+        <nav class="shell__nav" aria-label="Primary">
+            @for (item of navigation; track item.route) {
+                <a
+                    [routerLink]="item.route"
+                    routerLinkActive="shell__link--active"
+                    class="shell__link"
+                >
+                    {{ item.label }}
+                </a>
+            }
+        </nav>
+    </aside>
+
+    <main class="shell__content">
+        <router-outlet />
+    </main>
+</div>
